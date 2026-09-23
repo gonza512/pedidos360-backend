@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: bff-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # El BFF valida issuer, firma y vigencia contra el IDaaS definido.
+          # issuer-uri: https://cognito-idp.<region>.amazonaws.com/<user-pool-id>
+          issuer-uri: ${COGNITO_ISSUER_URI:http://localhost:9000}
+
+pedidos360:
+  security:
+    # Audience esperada (client id de la app registrada en Cognito)
+    audience: ${COGNITO_CLIENT_ID:pedidos360-client}
+    # Claim donde Cognito entrega los grupos/roles
+    roles-claim: cognito:groups
+
+bff:
+  routes:
+    clientes: ${CLIENTE_SERVICE_URL:http://localhost:8081}
+    productos: ${PRODUCTO_SERVICE_URL:http://localhost:8082}
+    pedidos: ${PEDIDO_SERVICE_URL:http://localhost:8083}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

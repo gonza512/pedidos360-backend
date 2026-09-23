@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: cliente-service
+  datasource:
+    # En AWS apunta a la instancia RDS (se inyecta por variables de entorno)
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/pedidos360}
+    username: ${DB_USER:pedidos360}
+    password: ${DB_PASSWORD:pedidos360}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COGNITO_ISSUER_URI:http://localhost:9000}
+
+pedidos360:
+  security:
+    audience: ${COGNITO_CLIENT_ID:pedidos360-client}
+    roles-claim: cognito:groups
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
